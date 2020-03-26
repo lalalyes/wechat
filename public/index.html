@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>迷你版微信</title>
+<link rel="stylesheet" href="css/amazeui.min.css" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+<div class="box">
+	<div class="wechat">
+
+		
+
+	
+		<!--聊天窗口-->
+		<div class="talk_window">
+			<div class="windows_top">
+				<div class="windows_top_box">
+					<span>群聊</span>
+					<ul class="window_icon">
+						<li><a href=""><img src="./images/icon/icon7.png"/></a></li>
+						<li><a href=""><img src="./images/icon/icon8.png"/></a></li>
+						<li><a href=""><img src="./images/icon/icon9.png"/></a></li>
+						<li><a href=""><img src="./images/icon/icon10.png"/></a></li>
+					</ul>
+					<div class="extend" class="am-btn am-btn-success" data-am-offcanvas="{target: '#doc-oc-demo3'}"></div>
+					<!-- 侧边栏内容 -->
+					<div id="doc-oc-demo3" class="am-offcanvas">
+						<div class="am-offcanvas-bar am-offcanvas-bar-flip">
+							<div class="am-offcanvas-content">
+								<p><a href="http://music.163.com/#/song?id=385554" target="_blank">网易音乐</a></p>
+								<p><a href="https://socket.io/" target="_blank">socket.io官网</a></p>
+								<p><a href="https://leetcode-cn.com/" target="_blank">leetcode中国</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!--聊天内容-->
+			<div class="windows_body">
+				<div class="office_text" style="height: 100%;">
+					<ul class="content" id="chatbox">
+					</ul>
+				</div>
+			</div>
+			
+			<div class="windows_input" id="talkbox">
+				<div class="input_icon">
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+				</div>
+				<form class="input_box">
+					<textarea name="" rows="" cols="" id="input_box"></textarea>
+					<button id="send">发送（S）</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="js/amazeui.min.js"></script>
+<script type="text/javascript" src="js/zUI.js"></script>
+<script type="text/javascript" src="js/wechat.js"></script>
+
+<script type="text/javascript">
+window.onload=function(){
+	function b(){
+		var text = document.getElementById('input_box');
+		var chat = document.getElementById('chatbox');
+		var btn = document.getElementById('send');
+		var talk = document.getElementById('talkbox');
+		btn.onclick=function(){
+			if(text.value ==''){
+				alert('不能发送空消息');
+			}
+		};
+	};
+	b();
+};
+
+$(function () {
+    var socket = io();
+    var username = Math.random().toString(36).substr(2);
+    $('form').submit(function () {
+        var obj = {"message":$('#input_box').val(),"user":username};
+        socket.emit('chat message', obj);
+        $('#input_box').val('');
+        return false;
+    });
+    socket.on('chat message', function (msg) {
+        if (msg.user===username) {
+            document.getElementById('chatbox').innerHTML += '<li class="me"><img src="'+'./images/icon/head.png'+'"><span>'+msg.message+'</span></li>';
+		}else {
+            document.getElementById('chatbox').innerHTML += '<li class="other"><img src="'+'./images/icon/head.png'+'"><span>'+msg.message+'</span></li>';
+        }
+
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+});
+</script>
+
+
+</body>
+</html>
